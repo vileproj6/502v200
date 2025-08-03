@@ -1,0 +1,48 @@
+2025-08-02 23:38:04,606 - services.groq_client - INFO - ✅ Cliente Groq (llama-3.3-70b-versatile) inicializado com sucesso.
+2025-08-02 23:38:04,606 - services.ai_manager - INFO - ✅ Gemini (gemini-2.0-flash-exp) inicializado com sucesso
+2025-08-02 23:38:04,620 - services.ai_manager - INFO - ✅ OpenAI (gpt-3.5-turbo) inicializado com sucesso
+2025-08-02 23:38:04,620 - services.ai_manager - INFO - ✅ Groq (llama-3.3-70b-versatile) inicializado com sucesso
+2025-08-02 23:38:04,621 - services.ai_manager - INFO - ✅ HuggingFace inicializado com sucesso
+2025-08-02 23:38:04,621 - services.ai_manager - INFO - 🤖 AI Manager inicializado com 4 provedores disponíveis.
+2025-08-02 23:38:04,733 - services.production_search_manager - INFO - Production Search Manager inicializado com 4 provedores
+2025-08-02 23:38:04,740 - services.quality_assurance_manager - INFO - Quality Assurance Manager inicializado com tolerância zero
+2025-08-02 23:38:04,744 - services.auto_save_manager - INFO - ✅ Auto Save Manager inicializado: relatorios_intermediarios
+2025-08-02 23:38:05,214 - services.supabase_client - INFO - ✅ Supabase client inicializado com sucesso
+2025-08-02 23:38:05,219 - services.local_file_manager - INFO - Local File Manager inicializado: C:\Users\user\Desktop\project110\src\services\..\..\analyses_data
+2025-08-02 23:38:05,219 - database - INFO - ✅ Database Manager inicializado com Supabase + Local Files
+2025-08-02 23:38:05,294 - services.consolidated_report_generator - INFO - Consolidated Report Generator inicializado
+2025-08-02 23:38:05,296 - services.gemini_2_5_client - INFO - ✅ Gemini 2.5 Pro Client inicializado com configurações avançadas
+2025-08-02 23:38:05,298 - __main__ - INFO - ✅ Blueprint analysis registrado
+2025-08-02 23:38:05,385 - __main__ - INFO - ✅ Blueprint pdf_generator registrado
+2025-08-02 23:38:05,427 - services.playwright_extractor - INFO - ✅ Playwright Extractor inicializado
+2025-08-02 23:38:05,501 - services.selenium_extractor - INFO - ✅ Selenium Extractor inicializado
+2025-08-02 23:38:05,699 - services.robust_content_extractor - INFO - 🔧 Robust Content Extractor inicializado
+2025-08-02 23:38:05,700 - services.robust_content_extractor - INFO - 📚 Extratores disponíveis: ['trafilatura', 'readability', 'newspaper', 'beautifulsoup', 'pdf_pypdf2', 'pdf_pdfplumber', 'playwright_dynamic', 'selenium_js']
+2025-08-02 23:38:05,702 - __main__ - INFO - ✅ Blueprint monitoring registrado
+2025-08-02 23:38:05,707 - __main__ - INFO - ✅ Blueprint user registrado
+2025-08-02 23:38:05,708 - __main__ - INFO - ✅ Blueprint progress registrado
+2025-08-02 23:38:05,715 - __main__ - INFO - ✅ Blueprint files registrado
+2025-08-02 23:38:05,717 - __main__ - INFO - 🚀 Iniciando ARQV30 Enhanced v2.0 em MODO PRODUÇÃO
+2025-08-02 23:38:05,717 - __main__ - INFO - 🔒 Debug desabilitado, headers de segurança habilitados
+2025-08-02 23:38:05,717 - __main__ - INFO - Servidor: http://0.0.0.0:5000
+2025-08-02 23:38:05,718 - __main__ - INFO - Encoding: UTF-8
+2025-08-02 23:38:05,718 - __main__ - INFO - Locale: ('pt_BR', 'UTF-8')
+2025-08-02 23:38:05,718 - __main__ - INFO - 🔍 Provedores de busca ativos: google, serper, bing, duckduckgo
+2025-08-02 23:38:05,731 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.5:5000
+2025-08-02 23:38:05,731 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-08-02 23:38:10,351 - werkzeug - INFO - 127.0.0.1 - - [02/Aug/2025 23:38:10] "GET / HTTP/1.1" 200 -
+2025-08-02 23:38:10,454 - werkzeug - INFO - 127.0.0.1 - - [02/Aug/2025 23:38:10] "GET /static/css/main.css HTTP/1.1" 200 -
+2025-08-02 23:38:10,606 - werkzeug - INFO - 127.0.0.1 - - [02/Aug/2025 23:38:10] "GET /static/css/components.css HTTP/1.1" 200 -
+2025-08-02 23:38:10,694 - werkzeug - INFO - 127.0.0.1 - - [02/Aug/2025 23:38:10] "[33mGET /static/images/logo.png HTTP/1.1[0m" 404 -
+2025-08-02 23:38:10,696 - werkzeug - INFO - 127.0.0.1 - - [02/Aug/2025 23:38:10] "[33mGET /static/js/main.js HTTP/1.1[0m" 404 -
+2025-08-02 23:38:10,700 - werkzeug - INFO - 127.0.0.1 - - [02/Aug/2025 23:38:10] "[33mGET /static/js/upload.js HTTP/1.1[0m" 404 -
+2025-08-02 23:38:10,701 - werkzeug - INFO - 127.0.0.1 - - [02/Aug/2025 23:38:10] "[33mGET /static/js/analysis.js HTTP/1.1[0m" 404 -
+2025-08-02 23:38:11,096 - werkzeug - INFO - 127.0.0.1 - - [02/Aug/2025 23:38:11] "[33mGET /static/images/favicon.ico HTTP/1.1[0m" 404 -
+2025-08-02 23:38:18,433 - werkzeug - INFO - 127.0.0.1 - - [02/Aug/2025 23:38:18] "GET /?segmento=TELEMEDICINA&produto=CUrso+telemedicina&preco=997&publico=&objetivo_receita=&orcamento_marketing=&prazo_lancamento=&concorrentes=&query=&dados_adicionais= HTTP/1.1" 200 -
+2025-08-02 23:38:18,746 - werkzeug - INFO - 127.0.0.1 - - [02/Aug/2025 23:38:18] "[33mGET /static/images/logo.png HTTP/1.1[0m" 404 -
+2025-08-02 23:38:18,779 - werkzeug - INFO - 127.0.0.1 - - [02/Aug/2025 23:38:18] "[33mGET /static/js/main.js HTTP/1.1[0m" 404 -
+2025-08-02 23:38:18,779 - werkzeug - INFO - 127.0.0.1 - - [02/Aug/2025 23:38:18] "[33mGET /static/js/upload.js HTTP/1.1[0m" 404 -
+2025-08-02 23:38:18,780 - werkzeug - INFO - 127.0.0.1 - - [02/Aug/2025 23:38:18] "[33mGET /static/js/analysis.js HTTP/1.1[0m" 404 -

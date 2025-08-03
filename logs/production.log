@@ -1,0 +1,16 @@
+2025-08-03 00:03:26,548 - __main__ - INFO - ============================================================
+2025-08-03 00:03:26,548 - __main__ - INFO - 🚀 ARQV30 Enhanced v2.0 - Production Runner
+2025-08-03 00:03:26,549 - __main__ - INFO - ============================================================
+2025-08-03 00:03:26,549 - __main__ - INFO - 🔍 Verificando dependências...
+2025-08-03 00:03:27,786 - __main__ - INFO - ✅ Todas as dependências principais encontradas
+2025-08-03 00:03:27,786 - __main__ - INFO - 🔍 Verificando configuração do ambiente...
+2025-08-03 00:03:27,786 - __main__ - ERROR - ❌ Variáveis de ambiente ausentes: SUPABASE_URL, SUPABASE_ANON_KEY, GEMINI_API_KEY
+2025-08-03 00:03:27,787 - __main__ - ERROR - Configure o arquivo .env com as chaves necessárias
+2025-08-03 00:03:30,185 - __main__ - INFO - ============================================================
+2025-08-03 00:03:30,185 - __main__ - INFO - 🚀 ARQV30 Enhanced v2.0 - Production Runner
+2025-08-03 00:03:30,186 - __main__ - INFO - ============================================================
+2025-08-03 00:03:30,186 - __main__ - INFO - 🔍 Verificando dependências...
+2025-08-03 00:03:31,213 - __main__ - INFO - ✅ Todas as dependências principais encontradas
+2025-08-03 00:03:31,213 - __main__ - INFO - 🔍 Verificando configuração do ambiente...
+2025-08-03 00:03:31,213 - __main__ - ERROR - ❌ Variáveis de ambiente ausentes: SUPABASE_URL, SUPABASE_ANON_KEY, GEMINI_API_KEY
+2025-08-03 00:03:31,213 - __main__ - ERROR - Configure o arquivo .env com as chaves necessárias
