@@ -14,6 +14,7 @@ try:
     HAS_GROQ = True
 except ImportError:
     HAS_GROQ = False
+    logger.warning("⚠️ Biblioteca 'groq' não instalada. Execute: pip install groq")
 
 logger = logging.getLogger(__name__)
 

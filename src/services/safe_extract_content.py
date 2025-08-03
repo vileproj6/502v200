@@ -8,9 +8,28 @@ Extração segura de conteúdo com validação rigorosa
 import logging
 import time
 from typing import Optional, Dict, Any, Tuple, List  # Added List import
-from services.robust_content_extractor import robust_content_extractor
-from services.content_quality_validator import content_quality_validator
-from services.url_resolver import url_resolver
+
+# Importações condicionais
+try:
+    from .robust_content_extractor import robust_content_extractor
+    HAS_ROBUST_EXTRACTOR = True
+except ImportError:
+    HAS_ROBUST_EXTRACTOR = False
+    robust_content_extractor = None
+
+try:
+    from .content_quality_validator import content_quality_validator
+    HAS_QUALITY_VALIDATOR = True
+except ImportError:
+    HAS_QUALITY_VALIDATOR = False
+    content_quality_validator = None
+
+try:
+    from .url_resolver import url_resolver
+    HAS_URL_RESOLVER = True
+except ImportError:
+    HAS_URL_RESOLVER = False
+    url_resolver = None
 
 logger = logging.getLogger(__name__)
 
@@ -53,11 +72,12 @@ class SafeContentExtractor:
                 return result
             
             # 2. Resolve redirecionamentos
-            resolved_url = url_resolver.resolve_redirect_url(url)
-            if resolved_url != url:
-                logger.info(f"🔄 URL resolvida: {url} -> {resolved_url}")
-                result['metadata']['resolved_url'] = resolved_url
-                url = resolved_url
+            if HAS_URL_RESOLVER and url_resolver:
+                resolved_url = url_resolver.resolve_redirect_url(url)
+                if resolved_url != url:
+                    logger.info(f"🔄 URL resolvida: {url} -> {resolved_url}")
+                    result['metadata']['resolved_url'] = resolved_url
+                    url = resolved_url
             
             # 3. Valida URL resolvida
             if not self._validate_url(resolved_url):
@@ -84,7 +104,16 @@ class SafeContentExtractor:
                 return result
             
             # 6. Valida qualidade do conteúdo
-            validation = content_quality_validator.validate_content(content, url, context)
+            if HAS_QUALITY_VALIDATOR and content_quality_validator:
+                validation = content_quality_validator.validate_content(content, url, context)
+            else:
+                # Validação básica
+                validation = {
+                    'valid': len(content) > 200,
+                    'score': min(100, len(content) / 10),
+                    'reason': 'Validação básica - instale content_quality_validator para validação completa'
+                }
+            
             result['validation'] = validation
             
             if not validation['valid']:
@@ -138,6 +167,10 @@ class SafeContentExtractor:
     
     def _extract_with_timeout(self, url: str) -> Optional[str]:
         """Extrai conteúdo com timeout"""
+        if not HAS_ROBUST_EXTRACTOR or not robust_content_extractor:
+            logger.error("❌ Robust Content Extractor não disponível")
+            return None
+        
         import signal
         
         def timeout_handler(signum, frame):

@@ -18,18 +18,21 @@ try:
     HAS_GEMINI = True
 except ImportError:
     HAS_GEMINI = False
+    logger.warning("⚠️ google-generativeai não instalado. Gemini desabilitado.")
 
 try:
     import openai
     HAS_OPENAI = True
 except ImportError:
     HAS_OPENAI = False
+    logger.warning("⚠️ openai não instalado. OpenAI desabilitado.")
 
 try:
-    from services.groq_client import groq_client
+    from .groq_client import groq_client
     HAS_GROQ_CLIENT = True
 except ImportError:
     HAS_GROQ_CLIENT = False
+    logger.warning("⚠️ groq_client não disponível. Groq desabilitado.")
 
 logger = logging.getLogger(__name__)
 

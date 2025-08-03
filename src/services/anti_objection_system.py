@@ -10,9 +10,24 @@ import random
 import logging
 import json
 from typing import Dict, List, Any, Optional
-from services.ai_manager import ai_manager
-from services.auto_save_manager import salvar_etapa, salvar_erro
 
+# Importações condicionais
+try:
+    from .ai_manager import ai_manager
+    HAS_AI_MANAGER = True
+except ImportError:
+    HAS_AI_MANAGER = False
+    ai_manager = None
+    logger.warning("⚠️ AI Manager não disponível")
+
+try:
+    from .auto_save_manager import salvar_etapa, salvar_erro
+    HAS_AUTO_SAVE = True
+except ImportError:
+    HAS_AUTO_SAVE = False
+    def salvar_etapa(*args, **kwargs): pass
+    def salvar_erro(*args, **kwargs): pass
+    logger.warning("⚠️ Auto Save Manager não disponível")
 logger = logging.getLogger(__name__)
 
 class AntiObjectionSystem:
@@ -288,6 +303,10 @@ class AntiObjectionSystem:
             """
             
             response = ai_manager.generate_analysis(prompt, max_tokens=1500)
+            
+            if not HAS_AI_MANAGER or not ai_manager:
+                logger.warning("⚠️ AI Manager não disponível, usando categorização básica")
+                return self._basic_categorization(objections)
             
             if response:
                 clean_response = response.strip()

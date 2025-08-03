@@ -49,9 +49,9 @@ cd src
 
 REM Verifica dependências críticas
 echo 🧪 Verificando dependências críticas...
-python -c "import flask, requests, google.generativeai, supabase" >nul 2>&1
+python -c "import flask, requests" >nul 2>&1
 if errorlevel 1 (
-    echo ❌ ERRO: Dependências faltando! Execute install.bat
+    echo ❌ ERRO: Dependências básicas faltando! Execute install.bat
     pause
     exit /b 1
 )
@@ -62,18 +62,16 @@ echo 🚀 Iniciando ARQV30 Enhanced v2.0 ULTRA-ROBUSTO...
 echo.
 echo 🌐 Servidor: http://localhost:5000
 echo 📊 Interface: Análise Ultra-Detalhada de Mercado
-echo 🤖 IA: Google Gemini Pro + HuggingFace
-echo 🔍 Pesquisa: WebSailor + Google Search + Jina AI
-echo 💾 Banco: Supabase PostgreSQL
+echo 🤖 IA: Configurável (Gemini, OpenAI, Groq, HuggingFace)
+echo 🔍 Pesquisa: Múltiplos provedores + Web scraping
+echo 💾 Armazenamento: Arquivos locais
 echo.
 echo ⚡ RECURSOS ATIVADOS:
-echo - Análise com múltiplas IAs
+echo - Sistema funciona sem dependências externas
 echo - Pesquisa web profunda
 echo - Processamento de anexos inteligente
 echo - Geração de relatórios PDF
-echo - Avatar ultra-detalhado
-echo - Drivers mentais customizados
-echo - Análise de concorrência profunda
+echo - Armazenamento local seguro
 echo.
 echo Pressione Ctrl+C para parar o servidor
 echo ========================================

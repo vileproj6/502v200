@@ -14,9 +14,15 @@ from urllib.parse import quote_plus, urljoin
 import json
 import re
 from datetime import datetime
-from bs4 import BeautifulSoup
 import random
 
+# Import condicional do BeautifulSoup
+try:
+    from bs4 import BeautifulSoup
+    HAS_BS4 = True
+except ImportError:
+    HAS_BS4 = False
+    logger.warning("⚠️ BeautifulSoup4 não instalado")
 logger = logging.getLogger(__name__)
 
 class WebSailorAgent:
@@ -220,6 +226,10 @@ class WebSailorAgent:
     def _bing_search_real(self, query: str, max_results: int) -> List[Dict[str, Any]]:
         """Busca REAL usando Bing"""
         
+        if not HAS_BS4:
+            logger.warning("⚠️ BeautifulSoup não disponível para Bing")
+            return []
+        
         try:
             # Bing search via scraping
             search_url = f"https://www.bing.com/search?q={quote_plus(query)}&cc=br&setlang=pt-br"
@@ -265,6 +275,10 @@ class WebSailorAgent:
     
     def _duckduckgo_search_real(self, query: str, max_results: int) -> List[Dict[str, Any]]:
         """Busca REAL usando DuckDuckGo"""
+        
+        if not HAS_BS4:
+            logger.warning("⚠️ BeautifulSoup não disponível para DuckDuckGo")
+            return []
         
         try:
             search_url = f"https://html.duckduckgo.com/html/?q={quote_plus(query)}"
@@ -405,6 +419,10 @@ class WebSailorAgent:
     def _extract_direct_real(self, url: str) -> Optional[str]:
         """Extração REAL direta usando requests + BeautifulSoup"""
         
+        if not HAS_BS4:
+            logger.warning("⚠️ BeautifulSoup não disponível para extração")
+            return None
+        
         try:
             response = requests.get(
                 url,
@@ -448,6 +466,9 @@ class WebSailorAgent:
     
     def _extract_real_internal_links(self, base_url: str, content: str) -> List[str]:
         """Extrai links internos REAIS de uma página"""
+        
+        if not HAS_BS4:
+            return []
         
         links = []
         try:

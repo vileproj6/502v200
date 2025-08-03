@@ -11,10 +11,16 @@ import time
 import requests
 from typing import Dict, List, Optional, Any
 from urllib.parse import quote_plus
-from bs4 import BeautifulSoup
 import json
 import random
 
+# Import condicional do BeautifulSoup
+try:
+    from bs4 import BeautifulSoup
+    HAS_BS4 = True
+except ImportError:
+    HAS_BS4 = False
+    logger.warning("⚠️ BeautifulSoup4 não instalado. Funcionalidade de scraping limitada.")
 logger = logging.getLogger(__name__)
 
 class ProductionSearchManager:
@@ -227,6 +233,10 @@ class ProductionSearchManager:
     
     def _search_bing(self, query: str, max_results: int) -> List[Dict[str, Any]]:
         """Busca usando Bing (scraping)"""
+        if not HAS_BS4:
+            logger.warning("⚠️ BeautifulSoup não disponível para Bing scraping")
+            return []
+        
         search_url = f"{self.providers['bing']['base_url']}?q={quote_plus(query)}&cc=br&setlang=pt-br&count={max_results}"
         
         response = requests.get(search_url, headers=self.headers, timeout=15)
@@ -262,6 +272,10 @@ class ProductionSearchManager:
     
     def _search_duckduckgo(self, query: str, max_results: int) -> List[Dict[str, Any]]:
         """Busca usando DuckDuckGo (scraping)"""
+        if not HAS_BS4:
+            logger.warning("⚠️ BeautifulSoup não disponível para DuckDuckGo scraping")
+            return []
+        
         search_url = f"{self.providers['duckduckgo']['base_url']}?q={quote_plus(query)}"
         
         response = requests.get(search_url, headers=self.headers, timeout=15)

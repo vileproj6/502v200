@@ -11,11 +11,30 @@ import mimetypes
 import re
 from typing import Dict, List, Optional, Any, Tuple
 from werkzeug.datastructures import FileStorage
-import PyPDF2
-import pandas as pd
-from docx import Document
 import json
 from datetime import datetime
+
+# Imports condicionais
+try:
+    import PyPDF2
+    HAS_PYPDF2 = True
+except ImportError:
+    HAS_PYPDF2 = False
+    logger.warning("⚠️ PyPDF2 não instalado")
+
+try:
+    import pandas as pd
+    HAS_PANDAS = True
+except ImportError:
+    HAS_PANDAS = False
+    logger.warning("⚠️ Pandas não instalado")
+
+try:
+    from docx import Document
+    HAS_DOCX = True
+except ImportError:
+    HAS_DOCX = False
+    logger.warning("⚠️ python-docx não instalado")
 
 logger = logging.getLogger(__name__)
 
@@ -174,6 +193,10 @@ class AttachmentService:
 
     def _extract_pdf_content(self, file_path: str) -> Optional[str]:
         """Extrai texto de arquivo PDF"""
+        if not HAS_PYPDF2:
+            logger.warning("⚠️ PyPDF2 não disponível para extração de PDF")
+            return None
+        
         try:
             content = ""
             with open(file_path, 'rb') as file:
@@ -191,6 +214,10 @@ class AttachmentService:
 
     def _extract_docx_content(self, file_path: str) -> Optional[str]:
         """Extrai texto de arquivo DOCX"""
+        if not HAS_DOCX:
+            logger.warning("⚠️ python-docx não disponível para extração de DOCX")
+            return None
+        
         try:
             doc = Document(file_path)
             content = ""
@@ -206,9 +233,11 @@ class AttachmentService:
 
     def _extract_excel_content(self, file_path: str) -> Optional[str]:
         """Extrai dados de arquivo Excel"""
+        if not HAS_PANDAS:
+            logger.warning("⚠️ Pandas não disponível para extração de Excel")
+            return None
+        
         try:
-            import pandas as pd
-
             # Lê todas as planilhas
             excel_file = pd.ExcelFile(file_path)
             content = ""
@@ -252,6 +281,10 @@ class AttachmentService:
 
     def _extract_csv_content(self, file_path: str) -> Optional[str]:
         """Extrai dados de arquivo CSV"""
+        if not HAS_PANDAS:
+            logger.warning("⚠️ Pandas não disponível para extração de CSV")
+            return None
+        
         try:
             df = pd.read_csv(file_path, encoding='utf-8')
             return df.to_string(index=False)

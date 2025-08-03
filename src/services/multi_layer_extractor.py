@@ -10,11 +10,43 @@ import time
 import asyncio
 from typing import Dict, List, Any, Optional, Tuple
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from services.robust_content_extractor import robust_content_extractor
-from services.playwright_extractor import playwright_extractor
-from services.content_quality_validator import content_quality_validator
-from services.url_resolver import url_resolver
-from services.auto_save_manager import salvar_etapa, salvar_erro
+
+# Importações condicionais
+try:
+    from .robust_content_extractor import robust_content_extractor
+    HAS_ROBUST_EXTRACTOR = True
+except ImportError:
+    HAS_ROBUST_EXTRACTOR = False
+    robust_content_extractor = None
+
+try:
+    from .playwright_extractor import playwright_extractor
+    HAS_PLAYWRIGHT = True
+except ImportError:
+    HAS_PLAYWRIGHT = False
+    playwright_extractor = None
+
+try:
+    from .content_quality_validator import content_quality_validator
+    HAS_QUALITY_VALIDATOR = True
+except ImportError:
+    HAS_QUALITY_VALIDATOR = False
+    content_quality_validator = None
+
+try:
+    from .url_resolver import url_resolver
+    HAS_URL_RESOLVER = True
+except ImportError:
+    HAS_URL_RESOLVER = False
+    url_resolver = None
+
+try:
+    from .auto_save_manager import salvar_etapa, salvar_erro
+    HAS_AUTO_SAVE = True
+except ImportError:
+    HAS_AUTO_SAVE = False
+    def salvar_etapa(*args, **kwargs): pass
+    def salvar_erro(*args, **kwargs): pass
 
 logger = logging.getLogger(__name__)
 
@@ -54,10 +86,11 @@ class MultiLayerExtractor:
         
         # Resolve URL primeiro
         try:
-            resolved_url = url_resolver.resolve_redirect_url(url)
-            if resolved_url != url:
-                logger.info(f"🔄 URL resolvida: {resolved_url}")
-                url = resolved_url
+            if HAS_URL_RESOLVER and url_resolver:
+                resolved_url = url_resolver.resolve_redirect_url(url)
+                if resolved_url != url:
+                    logger.info(f"🔄 URL resolvida: {resolved_url}")
+                    url = resolved_url
         except Exception as e:
             logger.warning(f"⚠️ Erro ao resolver URL: {e}")
         
@@ -79,9 +112,17 @@ class MultiLayerExtractor:
                 
                 if result['success']:
                     # Valida qualidade
-                    validation = content_quality_validator.validate_content(
-                        result['content'], url, context
-                    )
+                    if HAS_QUALITY_VALIDATOR and content_quality_validator:
+                        validation = content_quality_validator.validate_content(
+                            result['content'], url, context
+                        )
+                    else:
+                        # Validação básica sem o validador
+                        validation = {
+                            'valid': len(result['content']) > 200,
+                            'score': min(100, len(result['content']) / 10),
+                            'reason': 'Validação básica'
+                        }
                     
                     # Verifica se atende critérios mínimos
                     if self._meets_quality_criteria(result, validation):
@@ -140,6 +181,13 @@ class MultiLayerExtractor:
     def _extract_static_content(self, url: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
         """Camada 1: Extração estática tradicional"""
         
+        if not HAS_ROBUST_EXTRACTOR or not robust_content_extractor:
+            return {
+                'success': False,
+                'error': 'Robust Content Extractor não disponível',
+                'content': None
+            }
+        
         try:
             content = robust_content_extractor.extract_content(url)
             
@@ -167,7 +215,7 @@ class MultiLayerExtractor:
     def _extract_dynamic_content(self, url: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
         """Camada 2: Extração dinâmica com Playwright"""
         
-        if not playwright_extractor.available:
+        if not HAS_PLAYWRIGHT or not playwright_extractor or not playwright_extractor.available:
             return {
                 'success': False,
                 'error': 'Playwright não disponível',

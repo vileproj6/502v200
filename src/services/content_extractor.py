@@ -11,9 +11,15 @@ import time
 import requests
 from typing import Optional, Dict, Any
 from urllib.parse import urljoin, urlparse
-from bs4 import BeautifulSoup
 import re
 
+# Import condicional do BeautifulSoup
+try:
+    from bs4 import BeautifulSoup
+    HAS_BS4 = True
+except ImportError:
+    HAS_BS4 = False
+    logger.warning("⚠️ BeautifulSoup4 não instalado")
 logger = logging.getLogger(__name__)
 
 class ContentExtractor:
@@ -108,6 +114,10 @@ class ContentExtractor:
     
     def _extract_direct(self, url: str) -> Optional[str]:
         """Extração direta usando BeautifulSoup"""
+        if not HAS_BS4:
+            logger.warning("⚠️ BeautifulSoup não disponível para extração direta")
+            return None
+        
         try:
             response = requests.get(
                 url,
@@ -153,6 +163,10 @@ class ContentExtractor:
     
     def _extract_with_readability(self, url: str) -> Optional[str]:
         """Extração usando algoritmo de readability"""
+        if not HAS_BS4:
+            logger.warning("⚠️ BeautifulSoup não disponível para readability")
+            return None
+        
         try:
             response = requests.get(
                 url,
@@ -200,6 +214,10 @@ class ContentExtractor:
     
     def _extract_fallback(self, url: str) -> Optional[str]:
         """Extração de fallback mais agressiva"""
+        if not HAS_BS4:
+            logger.warning("⚠️ BeautifulSoup não disponível para fallback")
+            return None
+        
         try:
             response = requests.get(
                 url,
@@ -266,6 +284,9 @@ class ContentExtractor:
     
     def extract_metadata(self, url: str) -> Dict[str, Any]:
         """Extrai metadados da página"""
+        if not HAS_BS4:
+            return {'error': 'BeautifulSoup não disponível'}
+        
         try:
             response = requests.get(
                 url,
@@ -341,6 +362,9 @@ class ContentExtractor:
     
     def extract_links(self, url: str, internal_only: bool = True) -> list:
         """Extrai links da página"""
+        if not HAS_BS4:
+            return []
+        
         try:
             response = requests.get(
                 url,

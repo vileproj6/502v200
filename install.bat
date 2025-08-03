@@ -59,17 +59,24 @@ echo.
 pip install -r requirements.txt
 if errorlevel 1 (
     echo ❌ ERRO: Falha ao instalar dependências!
-    echo Verifique sua conexão com a internet e tente novamente.
+    echo.
+    echo Tentando instalar dependências básicas...
+    pip install Flask Flask-CORS python-dotenv requests beautifulsoup4 reportlab
+    if errorlevel 1 (
+        echo ❌ ERRO: Falha ao instalar dependências básicas!
+        echo Verifique sua conexão com a internet.
+    )
     pause
-    exit /b 1
 )
 
-REM Instala dependências adicionais para web scraping
-echo 🔄 Instalando dependências adicionais...
-pip install beautifulsoup4 lxml html5lib
-if errorlevel 1 (
-    echo ⚠️ AVISO: Algumas dependências adicionais falharam.
-)
+echo.
+echo ℹ️ DEPENDÊNCIAS OPCIONAIS:
+echo Para funcionalidades avançadas, instale:
+echo - pip install google-generativeai (para Gemini)
+echo - pip install openai (para OpenAI)
+echo - pip install groq (para Groq)
+echo - pip install trafilatura newspaper3k (para extração avançada)
+echo - pip install pandas openpyxl (para análise de planilhas)
 
 REM Cria diretórios necessários
 echo 🔄 Criando estrutura de diretórios ULTRA-ROBUSTA...

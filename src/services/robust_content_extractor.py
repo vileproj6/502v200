@@ -20,28 +20,32 @@ from services.auto_save_manager import salvar_etapa, salvar_erro
 
 # Imports condicionais para não quebrar se não estiver instalado
 try:
-    from services.playwright_extractor import playwright_extractor
+    from .playwright_extractor import playwright_extractor
     HAS_PLAYWRIGHT_INTEGRATION = True
 except ImportError:
     HAS_PLAYWRIGHT_INTEGRATION = False
+    logger.warning("⚠️ Playwright Extractor não disponível")
 
 try:
-    from services.selenium_extractor import selenium_extractor
+    from .selenium_extractor import selenium_extractor
     HAS_SELENIUM_INTEGRATION = True
 except ImportError:
     HAS_SELENIUM_INTEGRATION = False
+    logger.warning("⚠️ Selenium Extractor não disponível")
 
 try:
     import trafilatura
     HAS_TRAFILATURA = True
 except ImportError:
     HAS_TRAFILATURA = False
+    logger.warning("⚠️ Trafilatura não instalado")
 
 try:
     from readability import Document
     HAS_READABILITY = True
 except ImportError:
     HAS_READABILITY = False
+    logger.warning("⚠️ Readability não instalado")
 
 try:
     import newspaper
@@ -49,26 +53,35 @@ try:
     HAS_NEWSPAPER = True
 except ImportError:
     HAS_NEWSPAPER = False
+    logger.warning("⚠️ Newspaper3k não instalado")
 
 try:
     from bs4 import BeautifulSoup
     HAS_BEAUTIFULSOUP = True
 except ImportError:
     HAS_BEAUTIFULSOUP = False
+    logger.warning("⚠️ BeautifulSoup4 não instalado")
 
 try:
     import PyPDF2
     HAS_PYPDF2 = True
 except ImportError:
     HAS_PYPDF2 = False
+    logger.warning("⚠️ PyPDF2 não instalado")
 
 try:
     import pdfplumber
     HAS_PDFPLUMBER = True
 except ImportError:
     HAS_PDFPLUMBER = False
+    logger.warning("⚠️ PDFPlumber não instalado")
 
-from services.url_resolver import url_resolver
+try:
+    from .url_resolver import url_resolver
+    HAS_URL_RESOLVER = True
+except ImportError:
+    HAS_URL_RESOLVER = False
+    logger.warning("⚠️ URL Resolver não disponível")
 
 logger = logging.getLogger(__name__)
 
@@ -127,15 +140,16 @@ class RobustContentExtractor:
             logger.info(f"🔍 Iniciando extração de: {url}")
             
             # 1. Resolve URL de redirecionamento
-            resolved_url = url_resolver.resolve_redirect_url(url)
-            if resolved_url != url:
-                logger.info(f"🔄 URL resolvida: {url} -> {resolved_url}")
-                # Salva resolução de URL
-                salvar_etapa("url_resolvida", {
-                    "original": url,
-                    "resolved": resolved_url
-                }, categoria="pesquisa_web")
-                url = resolved_url
+            if HAS_URL_RESOLVER:
+                resolved_url = url_resolver.resolve_redirect_url(url)
+                if resolved_url != url:
+                    logger.info(f"🔄 URL resolvida: {url} -> {resolved_url}")
+                    # Salva resolução de URL
+                    salvar_etapa("url_resolvida", {
+                        "original": url,
+                        "resolved": resolved_url
+                    }, categoria="pesquisa_web")
+                    url = resolved_url
             
             # Valida URL resolvida
             if not url.startswith('http'):

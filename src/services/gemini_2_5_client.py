@@ -17,6 +17,7 @@ try:
     HAS_GEMINI = True
 except ImportError:
     HAS_GEMINI = False
+    logger.warning("⚠️ google-generativeai não instalado")
 
 logger = logging.getLogger(__name__)
 
@@ -26,15 +27,14 @@ class Gemini25ProClient:
     def __init__(self):
         """Inicializa cliente Gemini 2.5 Pro"""
         self.api_key = os.getenv('GEMINI_API_KEY')
+        self.available = False
         
         if not self.api_key:
             logger.error("❌ GEMINI_API_KEY não configurada")
-            self.available = False
             return
         
         if not HAS_GEMINI:
             logger.error("❌ Biblioteca google-generativeai não instalada")
-            self.available = False
             return
         
         try:
@@ -87,7 +87,6 @@ class Gemini25ProClient:
             
         except Exception as e:
             logger.error(f"❌ Erro ao inicializar Gemini 2.5 Pro: {e}")
-            self.available = False
     
     def is_available(self) -> bool:
         """Verifica se o cliente está disponível"""

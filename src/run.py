@@ -414,13 +414,8 @@ def main():
         logger.info(f"Locale: {locale.getlocale()}")
 
         # Verifica configurações críticas
-        critical_configs = [
-            'SUPABASE_URL', 'SUPABASE_ANON_KEY', 'GEMINI_API_KEY'
-        ]
-
-        missing_configs = [config for config in critical_configs if not os.getenv(config)]
-        if missing_configs:
-            logger.warning(f"⚠️ Configurações ausentes: {', '.join(missing_configs)}")
+        logger.info("ℹ️ Sistema configurado para funcionar sem dependências externas")
+        logger.info("ℹ️ Para funcionalidades avançadas, configure as APIs opcionais no .env")
 
         # Log de provedores de busca
         try:

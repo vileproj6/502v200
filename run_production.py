@@ -50,23 +50,27 @@ def check_environment():
     """Verifica variáveis de ambiente críticas"""
     logger.info("🔍 Verificando configuração do ambiente...")
     
-    critical_vars = [
-        'SUPABASE_URL',
-        'SUPABASE_ANON_KEY',
-        'GEMINI_API_KEY'
+    # Não há mais variáveis críticas obrigatórias
+    optional_vars = [
+        'GEMINI_API_KEY',
+        'OPENAI_API_KEY', 
+        'GROQ_API_KEY',
+        'GOOGLE_SEARCH_KEY'
     ]
     
-    missing_vars = []
-    for var in critical_vars:
+    configured_vars = []
+    for var in optional_vars:
         if not os.getenv(var):
-            missing_vars.append(var)
+            pass  # Não é mais crítico
+        else:
+            configured_vars.append(var)
     
-    if missing_vars:
-        logger.error(f"❌ Variáveis de ambiente ausentes: {', '.join(missing_vars)}")
-        logger.error("Configure o arquivo .env com as chaves necessárias")
-        return False
+    if configured_vars:
+        logger.info(f"✅ APIs configuradas: {', '.join(configured_vars)}")
+    else:
+        logger.info("ℹ️ Nenhuma API externa configurada - sistema funcionará com recursos básicos")
     
-    logger.info("✅ Configuração do ambiente OK")
+    logger.info("✅ Sistema pronto para execução")
     return True
 
 def setup_directories():

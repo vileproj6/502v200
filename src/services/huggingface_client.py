@@ -19,7 +19,6 @@ class HuggingFaceClient:
     def __init__(self):
         """Inicializa cliente HuggingFace REAL"""
         self.api_key = os.getenv("HUGGINGFACE_API_KEY")
-        self.model_name = os.getenv("HUGGINGFACE_MODEL_NAME", "microsoft/DialoGPT-large")
         
         # Modelos REAIS disponíveis para análise
         self.available_models = [
@@ -31,8 +30,8 @@ class HuggingFaceClient:
         ]
         
         # Tenta usar o melhor modelo disponível
-        self.model_name = self.available_models[0]  # Usa o melhor
-        self.base_url = f"https://api-inference.huggingface.co/models/{self.model_name}"
+        self.current_model_index = 0
+        self.base_url = "https://api-inference.huggingface.co/models/"
         
         self.headers = {
             "Authorization": f"Bearer {self.api_key}",
@@ -42,7 +41,7 @@ class HuggingFaceClient:
         self.available = bool(self.api_key)
         
         if self.available:
-            logger.info(f"✅ HuggingFace client REAL inicializado com modelo: {self.model_name}")
+            logger.info(f"✅ HuggingFace client inicializado com {len(self.available_models)} modelos")
         else:
             logger.warning("⚠️ HuggingFace API key não encontrada")
     
@@ -224,7 +223,7 @@ RESPOSTA:
         """Retorna informações do modelo atual"""
         
         return {
-            "model_name": self.model_name,
+            "current_model": self.available_models[self.current_model_index] if self.available_models else None,
             "available_models": self.available_models,
             "api_available": self.available,
             "base_url": self.base_url,
@@ -236,9 +235,9 @@ RESPOSTA:
             ]
         }
 
-# Instância global REAL
+# Instância global
 try:
     huggingface_client = HuggingFaceClient()
 except Exception as e:
-    logger.error(f"❌ Erro ao inicializar HuggingFace client REAL: {str(e)}")
+    logger.error(f"❌ Erro ao inicializar HuggingFace client: {str(e)}")
     huggingface_client = None

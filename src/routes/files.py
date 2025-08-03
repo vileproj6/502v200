@@ -359,121 +359,36 @@ def cleanup_old_files():
 
 @files_bp.route('/backup_to_supabase', methods=['POST'])
 def backup_to_supabase():
-    """Faz backup de análises locais para Supabase"""
+    """Função desabilitada - Supabase removido"""
     
     try:
-        if not db_manager.supabase.is_connected():
-            return jsonify({
-                'error': 'Supabase não está conectado',
-                'message': 'Configure as credenciais do Supabase'
-            }), 400
-        
-        # Lista análises locais
-        local_analyses = local_file_manager.list_local_analyses()
-        
-        backed_up = 0
-        errors = []
-        
-        for analysis in local_analyses:
-            try:
-                analysis_id = analysis['analysis_id']
-                
-                # Verifica se já existe no Supabase
-                existing = db_manager.supabase.get_analysis(analysis_id)
-                if existing:
-                    logger.info(f"⚠️ Análise {analysis_id} já existe no Supabase")
-                    continue
-                
-                # Carrega análise completa do arquivo JSON
-                json_file = None
-                for root, dirs, files in os.walk(local_file_manager.base_dir):
-                    for file in files:
-                        if analysis_id[:8] in file and file.endswith('_completa.json'):
-                            json_file = os.path.join(root, file)
-                            break
-                    if json_file:
-                        break
-                
-                if json_file:
-                    with open(json_file, 'r', encoding='utf-8') as f:
-                        analysis_data = json.load(f)
-                    
-                    # Salva no Supabase
-                    result = db_manager.supabase.create_analysis(analysis_data)
-                    if result:
-                        backed_up += 1
-                        logger.info(f"✅ Backup realizado: {analysis_id}")
-                    else:
-                        errors.append(f"Falha ao fazer backup de {analysis_id}")
-                else:
-                    errors.append(f"Arquivo JSON não encontrado para {analysis_id}")
-                    
-            except Exception as e:
-                error_msg = f"Erro no backup de {analysis.get('analysis_id', 'unknown')}: {str(e)}"
-                errors.append(error_msg)
-                logger.error(error_msg)
-        
         return jsonify({
-            'success': True,
-            'message': f'Backup concluído: {backed_up} análises',
-            'total_local': len(local_analyses),
-            'backed_up': backed_up,
-            'errors': errors,
+            'success': False,
+            'message': 'Backup para Supabase desabilitado - sistema usa apenas armazenamento local',
             'timestamp': datetime.now().isoformat()
-        })
+        }), 501
         
     except Exception as e:
-        logger.error(f"Erro no backup para Supabase: {str(e)}")
+        logger.error(f"Erro na função de backup: {str(e)}")
         return jsonify({
-            'error': 'Erro no backup para Supabase',
+            'error': 'Função de backup desabilitada',
             'message': str(e)
         }), 500
 
 @files_bp.route('/sync_with_supabase', methods=['POST'])
 def sync_with_supabase():
-    """Sincroniza análises entre local e Supabase"""
+    """Função desabilitada - Supabase removido"""
     
     try:
-        if not db_manager.supabase.is_connected():
-            return jsonify({
-                'error': 'Supabase não está conectado'
-            }), 400
-        
-        # Lista análises do Supabase
-        supabase_analyses = db_manager.supabase.list_analyses(100)
-        
-        # Lista análises locais
-        local_analyses = local_file_manager.list_local_analyses()
-        
-        # Identifica diferenças
-        supabase_ids = set(a['id'] for a in supabase_analyses)
-        local_ids = set(a['analysis_id'] for a in local_analyses)
-        
-        only_supabase = supabase_ids - local_ids
-        only_local = local_ids - supabase_ids
-        both = supabase_ids & local_ids
-        
         return jsonify({
-            'success': True,
-            'sync_status': {
-                'total_supabase': len(supabase_analyses),
-                'total_local': len(local_analyses),
-                'only_in_supabase': len(only_supabase),
-                'only_in_local': len(only_local),
-                'in_both': len(both),
-                'sync_needed': len(only_supabase) + len(only_local) > 0
-            },
-            'details': {
-                'only_supabase_ids': list(only_supabase),
-                'only_local_ids': list(only_local),
-                'synced_ids': list(both)
-            },
+            'success': False,
+            'message': 'Sincronização com Supabase desabilitada - sistema usa apenas armazenamento local',
             'timestamp': datetime.now().isoformat()
-        })
+        }), 501
         
     except Exception as e:
-        logger.error(f"Erro na sincronização: {str(e)}")
+        logger.error(f"Erro na função de sincronização: {str(e)}")
         return jsonify({
-            'error': 'Erro na sincronização',
+            'error': 'Função de sincronização desabilitada',
             'message': str(e)
         }), 500

@@ -10,10 +10,16 @@ import time
 import requests
 from typing import Dict, List, Any, Optional
 from urllib.parse import quote_plus
-from bs4 import BeautifulSoup
 import json
 import random
 
+# Import condicional do BeautifulSoup
+try:
+    from bs4 import BeautifulSoup
+    HAS_BS4 = True
+except ImportError:
+    HAS_BS4 = False
+    logger.warning("⚠️ BeautifulSoup4 não instalado. Funcionalidade de scraping limitada.")
 logger = logging.getLogger(__name__)
 
 class SecondarySearchEngines:
@@ -126,6 +132,10 @@ class SecondarySearchEngines:
     def _search_yandex(self, query: str, max_results: int) -> List[Dict[str, Any]]:
         """Busca no Yandex"""
         
+        if not HAS_BS4:
+            logger.warning("⚠️ BeautifulSoup não disponível para Yandex")
+            return []
+        
         try:
             search_url = f"https://yandex.com/search/?text={quote_plus(query)}&lr=21"  # lr=21 = Brasil
             
@@ -170,6 +180,10 @@ class SecondarySearchEngines:
     
     def _search_baidu(self, query: str, max_results: int) -> List[Dict[str, Any]]:
         """Busca no Baidu (limitado fora da China)"""
+        
+        if not HAS_BS4:
+            logger.warning("⚠️ BeautifulSoup não disponível para Baidu")
+            return []
         
         try:
             # Baidu tem limitações geográficas, mas tentamos
@@ -218,6 +232,10 @@ class SecondarySearchEngines:
     
     def _search_startpage(self, query: str, max_results: int) -> List[Dict[str, Any]]:
         """Busca no Startpage"""
+        
+        if not HAS_BS4:
+            logger.warning("⚠️ BeautifulSoup não disponível para Startpage")
+            return []
         
         try:
             search_url = f"https://www.startpage.com/sp/search?query={quote_plus(query)}&language=portuguese"
@@ -293,6 +311,10 @@ class SecondarySearchEngines:
     def _search_ecosia(self, query: str, max_results: int) -> List[Dict[str, Any]]:
         """Busca no Ecosia"""
         
+        if not HAS_BS4:
+            logger.warning("⚠️ BeautifulSoup não disponível para Ecosia")
+            return []
+        
         try:
             search_url = f"https://www.ecosia.org/search?q={quote_plus(query)}&region=br"
             
@@ -331,6 +353,10 @@ class SecondarySearchEngines:
     
     def _search_brazilian_sites(self, query: str, max_results: int) -> List[Dict[str, Any]]:
         """Busca em sites brasileiros específicos"""
+        
+        if not HAS_BS4:
+            logger.warning("⚠️ BeautifulSoup não disponível para sites brasileiros")
+            return []
         
         all_results = []
         

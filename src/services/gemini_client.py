@@ -10,22 +10,50 @@ import logging
 import json
 import time
 from typing import Dict, List, Optional, Any
-import google.generativeai as genai
 from datetime import datetime
 
+# Import condicional do Gemini
+try:
+    import google.generativeai as genai
+    HAS_GEMINI = True
+except ImportError:
+    HAS_GEMINI = False
+    logger.warning("⚠️ google-generativeai não instalado")
 logger = logging.getLogger(__name__)
 
-class UltraRobustGeminiClient:
-    """Cliente REAL para integração com Google Gemini Pro - ZERO SIMULAÇÃO"""
+class GeminiClient:
+    """Cliente para integração com Google Gemini Pro"""
     
     def __init__(self):
-        """Inicializa cliente Gemini REAL"""
+        """Inicializa cliente Gemini"""
         self.api_key = os.getenv('GEMINI_API_KEY')
-        if not self.api_key:
-            raise ValueError("❌ GEMINI_API_KEY não configurada - Configure para análise REAL!")
+        self.available = False
         
-        # Configura API REAL
-        genai.configure(api_key=self.api_key)
+        if not self.api_key:
+            logger.warning("⚠️ GEMINI_API_KEY não configurada")
+            return
+        
+        if not HAS_GEMINI:
+            logger.warning("⚠️ Biblioteca google-generativeai não instalada")
+            return
+        
+        try:
+            # Configura API
+            genai.configure(api_key=self.api_key)
+            
+            # Modelo mais avançado disponível
+            self.model = genai.GenerativeModel("gemini-1.5-pro")
+            
+            self.available = True
+            logger.info("✅ Cliente Gemini inicializado com sucesso")
+            
+        except Exception as e:
+            logger.error(f"❌ Erro ao inicializar Gemini: {e}")
+            self.available = False
+    
+    def is_available(self) -> bool:
+        """Verifica se está disponível"""
+        return self.available
         
         # Modelo mais avançado disponível
         self.model = genai.GenerativeModel("gemini-1.5-pro")
@@ -62,7 +90,10 @@ class UltraRobustGeminiClient:
         logger.info("✅ Cliente Gemini REAL inicializado com configurações máximas")
     
     def test_connection(self) -> bool:
-        """Testa conexão REAL com Gemini"""
+        """Testa conexão com Gemini"""
+        if not self.available:
+            return False
+        
         try:
             response = self.model.generate_content(
                 "Responda apenas: GEMINI_REAL_OK",
@@ -71,7 +102,7 @@ class UltraRobustGeminiClient:
             )
             return "GEMINI_REAL_OK" in response.text
         except Exception as e:
-            logger.error(f"❌ Erro ao testar Gemini REAL: {str(e)}")
+            logger.error(f"❌ Erro ao testar Gemini: {str(e)}")
             return False
     
     def generate_ultra_detailed_analysis(
@@ -692,10 +723,9 @@ Estrutura OBRIGATÓRIA:
         
         return fallback
 
-# Instância global do cliente REAL
+# Instância global do cliente
 try:
-    gemini_client = UltraRobustGeminiClient()
-    logger.info("✅ Cliente Gemini REAL inicializado com sucesso")
+    gemini_client = GeminiClient()
 except Exception as e:
-    logger.error(f"❌ Erro ao inicializar cliente Gemini REAL: {str(e)}")
+    logger.error(f"❌ Erro ao inicializar cliente Gemini: {str(e)}")
     gemini_client = None
